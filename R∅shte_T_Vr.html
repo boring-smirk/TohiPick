@@ -33,6 +33,14 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
   .header p { color: var(--muted); font-size: 0.85rem; }
+  .release-box {
+    max-width: 760px; margin: 0 auto 8px; padding: 8px 12px;
+    background: rgba(59,130,246,0.12); border: 1px solid var(--border); border-radius: 12px;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+    font-size: 0.82rem;
+  }
+  .release-box a { color: #93c5fd; text-decoration: none; font-weight: 600; }
+  .release-box a:hover { text-decoration: underline; }
 
   .controls {
     max-width: 760px; margin: 0 auto 8px; background: var(--card);
@@ -310,6 +318,11 @@
 
 
   
+
+  <div class="release-box">
+    <span>📦 نسخه‌ها و تغییرات پروژه</span>
+    <a href="https://github.com/boring-smirk/TohiPick/releases" target="_blank" rel="noopener">مشاهده Releases در GitHub</a>
+  </div>
 
   <div class="controls">
     <div class="control-group">
