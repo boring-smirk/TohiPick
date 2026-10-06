@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مرتب‌سازی انتخاب رشته </title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --card-hover: #334155;
+    --accent: #3b82f6; --accent2: #8b5cf6; --text: #f1f5f9;
+    --muted: #94a3b8; --border: #334155; --success: #22c55e;
+    --danger: #ef4444; --font-family: 'Vazirmatn', Tahoma, system-ui, sans-serif;
+    --font-size: 15px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-family); font-size: var(--font-size);
+    background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 100%);
+    color: var(--text); min-height: 100vh; padding: 10px; line-height: 1.5;
+  }
+  .header { max-width: 760px; margin: 0 auto 10px; text-align: center; }
+  .header h1 {
+    font-size: 1.35rem; font-weight: 700;
+    background: linear-gradient(90deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .header p { color: var(--muted); font-size: 0.85rem; }
+
+  .controls {
+    max-width: 760px; margin: 0 auto 8px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
+  }
+  .control-group { display: flex; align-items: center; gap: 6px; }
+  .control-group label { font-size: 0.75rem; color: var(--muted); }
+  select {
+    background: #0f172a; border: 1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: 5px 8px; font-family: inherit; font-size: 0.82rem; outline: none;
+  }
+  .font-size-btns { display: flex; gap: 3px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
+  .font-size-btns button {
+    background: transparent; border: none; color: var(--text); width: 28px; height: 24px;
+    border-radius: 5px; cursor: pointer; font-weight: 700; font-size: 0.85rem;
+  }
+  .font-size-btns button:hover { background: var(--card-hover); }
+  .size-label { min-width: 28px; text-align: center; font-size: 0.75rem; color: var(--muted); }
+
+  .toolbar {
+    max-width: 760px; margin: 0 auto 8px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+  }
+  .btn {
+    border: none; border-radius: 9px; padding: 8px 12px; font-size: 0.82rem; font-weight: 600;
+    font-family: inherit; cursor: pointer; transition: transform 0.12s; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn-primary { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; }
+  .btn-success { background: #22c55e; color: #052e16; }
+  .btn-add { background: linear-gradient(135deg, #06b6d4, #3b82f6); color: #fff; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { background: var(--card-hover); }
+  .btn-warn { background: #f59e0b; color: #451a03; }
+  .btn-danger-soft { background: transparent; border: 1px solid #7f1d1d; color: #fca5a5; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Selection bar */
+  .sel-bar {
+    max-width: 760px; margin: 0 auto 8px; background: #1e3a5f; border: 1px solid #3b82f6;
+    border-radius: 12px; padding: 8px 12px; display: none; flex-wrap: wrap; gap: 6px;
+    align-items: center; justify-content: space-between;
+  }
+  .sel-bar.show { display: flex; }
+  .sel-count { font-weight: 700; color: #93c5fd; font-size: 0.9rem; }
+  .sel-actions { display: flex; flex-wrap: wrap; gap: 5px; }
+  .sel-actions .btn { padding: 6px 10px; font-size: 0.78rem; }
+  .move-to-box {
+    display: flex; align-items: center; gap: 4px; background: #0f172a;
+    border: 1px solid var(--border); border-radius: 8px; padding: 3px 6px;
+  }
+  .move-to-box input {
+    width: 48px; background: transparent; border: none; color: var(--text);
+    font-family: inherit; font-size: 0.85rem; text-align: center; outline: none;
+  }
+
+  .search-box { max-width: 760px; margin: 0 auto 8px; }
+  .search-box input {
+    width: 100%; padding: 9px 12px; border-radius: 11px; border: 1px solid var(--border);
+    background: var(--card); color: var(--text); font-family: inherit; font-size: 0.9rem; outline: none;
+  }
+  .search-box input:focus { border-color: var(--accent); }
+
+  .add-panel {
+    max-width: 760px; margin: 0 auto 10px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px; display: none;
+  }
+  .add-panel.open { display: block; }
+  .add-panel h3 { font-size: 0.92rem; margin-bottom: 10px; color: #93c5fd; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+  .tab {
+    flex: 1; text-align: center; padding: 7px; border-radius: 8px; cursor: pointer;
+    background: #0f172a; border: 1px solid var(--border); font-size: 0.8rem; font-weight: 600;
+  }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 520px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-field { display: flex; flex-direction: column; gap: 3px; }
+  .form-field label { font-size: 0.72rem; color: var(--muted); }
+  .form-field input, .form-field select, .form-field textarea {
+    background: #0f172a; border: 1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: 8px 10px; font-family: inherit; font-size: 0.88rem; outline: none;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--accent); }
+  .form-field textarea { min-height: 80px; resize: vertical; }
+  .form-actions { display: flex; gap: 6px; margin-top: 10px; justify-content: flex-end; }
+  .bulk-hint { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+  .list-container {
+    max-width: 760px; margin: 0 auto; background: var(--card); border-radius: 14px;
+    border: 1px solid var(--border); overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  }
+  .list-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 12px; background: rgba(59,130,246,0.12); border-bottom: 1px solid var(--border);
+    font-size: 0.78rem; color: var(--muted);
+  }
+  #sortable { list-style: none; max-height: calc(100vh - 360px); overflow-y: auto; padding: 6px; }
+  .item {
+    display: flex; align-items: center; gap: 8px; padding: 9px; margin-bottom: 5px;
+    background: #0f172a; border-radius: 10px; border: 1px solid transparent;
+    cursor: grab; transition: background 0.12s, border-color 0.12s; user-select: none;
+  }
+  .item:active { cursor: grabbing; }
+  .item:hover { background: #1e293b; border-color: var(--border); }
+  .item.selected { background: #1e3a5f; border-color: #3b82f6; }
+  .item.sortable-ghost { opacity: 0.35; background: var(--accent); }
+  .item.sortable-chosen { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(59,130,246,0.3); }
+  .check {
+    width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border);
+    cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    background: transparent; transition: all 0.15s;
+  }
+  .item.selected .check { background: var(--accent); border-color: var(--accent); }
+  .item.selected .check::after { content: '✓'; color: #fff; font-size: 0.7rem; font-weight: 700; }
+  .handle { color: var(--muted); font-size: 1.05rem; cursor: grab; }
+  .rank {
+    min-width: 26px; height: 26px; border-radius: 7px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff;
+    font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;
+  }
+  .content { flex: 1; min-width: 0; }
+  .code { font-family: ui-monospace, monospace; font-weight: 700; font-size: 1.02em; color: #93c5fd; }
+  .meta { font-size: 0.78em; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-actions { display: flex; gap: 2px; opacity: 0.4; }
+  .item:hover .item-actions { opacity: 1; }
+  .item-actions button {
+    background: transparent; border: none; color: var(--muted); cursor: pointer;
+    padding: 3px 5px; border-radius: 5px; font-size: 0.8rem;
+  }
+  .item-actions button:hover { background: #7f1d1d55; color: #fca5a5; }
+
+  .badge { display: inline-block; padding: 1px 6px; border-radius: 5px; font-size: 0.68em; font-weight: 600; margin-left: 2px; }
+  .badge-ai { background: #7c3aed33; color: #c4b5fd; }
+  .badge-soft { background: #ea580c33; color: #fdba74; }
+  .badge-data { background: #16a34a33; color: #86efac; }
+  .badge-secure { background: #0891b233; color: #67e8f9; }
+  .badge-net { background: #2563eb33; color: #93c5fd; }
+  .badge-other { background: #64748b33; color: #cbd5e1; }
+  .badge-daily { background: #22c55e33; color: #86efac; }
+  .badge-night { background: #f59e0b33; color: #fcd34d; }
+  .badge-campus { background: #a855f733; color: #e9d5ff; }
+  .badge-virt { background: #64748b33; color: #94a3b8; }
+  .badge-r0 { background: #0f766e33; color: #5eead4; }
+  .badge-r1 { background: #0369a133; color: #7dd3fc; }
+  .badge-r2 { background: #15803d33; color: #86efac; }
+  .badge-r3 { background: #b4530933; color: #fcd34d; }
+  .badge-r4 { background: #be123c33; color: #fda4af; }
+  .badge-r5 { background: #0e749033; color: #67e8f9; }
+  .badge-r6 { background: #c2410c33; color: #fdba74; }
+  .badge-r7 { background: #47556933; color: #cbd5e1; }
+  .badge-year { background: #0f766e44; color: #5eead4; }
+  .badge-eve { background: #c2410c33; color: #fdba74; }
+
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: #22c55e; color: #052e16; padding: 10px 18px; border-radius: 11px;
+    font-weight: 600; box-shadow: 0 6px 24px rgba(0,0,0,0.4); transition: transform 0.25s; z-index: 100;
+    pointer-events: none; font-size: 0.88rem;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: #ef4444; color: #fff; }
+
+  .export-area { max-width: 760px; margin: 10px auto 0; display: none; }
+
+  .item { flex-wrap: wrap; }
+  .item-main { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; }
+  .info-toggle {
+    flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(103,232,249,0.14); border: 1px solid rgba(103,232,249,0.35);
+    color: #67e8f9; font-size: 0.72rem; font-weight: 700; font-style: normal;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0; line-height: 1;
+  }
+  .info-toggle:hover { background: rgba(103,232,249,0.28); }
+  .info-toggle.active { background: #67e8f9; color: #0f172a; border-color: #67e8f9; }
+  .desc-panel {
+    display: none; margin-top: 6px; padding: 8px 10px; background: rgba(103,232,249,0.08);
+    border: 1px solid var(--border); border-radius: 8px; font-size: 0.82em; color: var(--text);
+    line-height: 1.6; width: 100%; box-sizing: border-box;
+  }
+  .desc-panel.show { display: block; }
+  .export-area textarea {
+    width: 100%; height: 110px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 11px; color: var(--text); padding: 10px; font-family: ui-monospace, monospace;
+    font-size: 0.82rem; resize: vertical;
+  }
+
+  /* Empty set logo overlay — no dim, fully click-through */
+  .emptyset-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; opacity: 0;
+    background: transparent;
+    transition: opacity 0.35s ease;
+  }
+  .emptyset-overlay.show { opacity: 1; }
+  .emptyset-logo {
+    font-size: min(42vw, 280px);
+    font-weight: 700;
+    line-height: 1;
+    font-family: 'Segoe UI Symbol', 'Noto Sans Symbols', 'DejaVu Sans', serif;
+    text-shadow: 0 0 40px currentColor, 0 0 80px currentColor, 0 8px 32px rgba(0,0,0,0.5);
+    user-select: none;
+    pointer-events: none;
+    position: relative;
+  }
+
+  @keyframes emptyset-pop {
+    0%   { transform: scale(0.15) rotate(-25deg); opacity: 0; filter: blur(12px); }
+    35%  { transform: scale(1.18) rotate(8deg); opacity: 1; filter: blur(0); }
+    55%  { transform: scale(0.92) rotate(-4deg); }
+    75%  { transform: scale(1.06) rotate(2deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 0; filter: blur(4px); }
+  }
+  @keyframes emptyset-spin {
+    0%   { transform: scale(0.1) rotate(-180deg); opacity: 0; filter: blur(14px); }
+    40%  { transform: scale(1.15) rotate(20deg); opacity: 1; filter: blur(0); }
+    70%  { transform: scale(0.95) rotate(-8deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 0; filter: blur(5px); }
+  }
+  @keyframes emptyset-bounce {
+    0%   { transform: scale(0.2) translateY(80px); opacity: 0; filter: blur(10px); }
+    30%  { transform: scale(1.25) translateY(-18px); opacity: 1; filter: blur(0); }
+    50%  { transform: scale(0.88) translateY(10px); }
+    70%  { transform: scale(1.08) translateY(-6px); }
+    100% { transform: scale(1) translateY(0); opacity: 0; filter: blur(4px); }
+  }
+  @keyframes emptyset-flip {
+    0%   { transform: scale(0.2) rotateX(90deg) rotateZ(-30deg); opacity: 0; filter: blur(12px); }
+    35%  { transform: scale(1.2) rotateX(-12deg) rotateZ(10deg); opacity: 1; filter: blur(0); }
+    60%  { transform: scale(0.94) rotateX(6deg) rotateZ(-4deg); }
+    100% { transform: scale(1) rotateX(0) rotateZ(0); opacity: 0; filter: blur(4px); }
+  }
+  @keyframes emptyset-zoom {
+    0%   { transform: scale(2.4); opacity: 0; filter: blur(20px); }
+    25%  { transform: scale(0.85); opacity: 1; filter: blur(0); }
+    45%  { transform: scale(1.12); }
+    70%  { transform: scale(0.97); }
+    100% { transform: scale(1); opacity: 0; filter: blur(5px); }
+  }
+  @keyframes emptyset-wobble {
+    0%   { transform: scale(0.15) rotate(-40deg) skewX(12deg); opacity: 0; filter: blur(12px); }
+    30%  { transform: scale(1.2) rotate(15deg) skewX(-8deg); opacity: 1; filter: blur(0); }
+    50%  { transform: scale(0.9) rotate(-10deg) skewX(5deg); }
+    70%  { transform: scale(1.06) rotate(5deg) skewX(-2deg); }
+    100% { transform: scale(1) rotate(0) skewX(0); opacity: 0; filter: blur(4px); }
+  }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <div class="controls">
+    <div class="control-group">
+      <label>فونت:</label>
+      <select id="fontSelect" onchange="changeFont(this.value)">
+        <option value="'Vazirmatn', Tahoma, system-ui, sans-serif">وزیرمتن</option>
+        <option value="Tahoma, 'Segoe UI', system-ui, sans-serif">تاهوما</option>
+        <option value="'Segoe UI', Tahoma, system-ui, sans-serif">Segoe UI</option>
+        <option value="system-ui, -apple-system, sans-serif">سیستم</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>اندازه:</label>
+      <div class="font-size-btns">
+        <button type="button" onclick="changeSize(-1)">A−</button>
+        <span class="size-label" id="sizeLabel">15</span>
+        <button type="button" onclick="changeSize(1)">A+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-add" onclick="toggleAddPanel()">＋ افزودن</button>
+    <button class="btn btn-outline" onclick="selectAll()">☑ همه</button>
+    <button class="btn btn-outline" onclick="deselectAll()">☐ هیچکدام</button>
+    <button class="btn btn-success" onclick="exportCodes()">📋 کپی کدها</button>
+    <button class="btn btn-primary" onclick="exportFull()">📄 لیست کامل</button>
+    <button class="btn btn-outline" onclick="exportCSV()">📥 خروجی CSV</button>
+    <button class="btn btn-warn" onclick="exportHTML()">💾 ذخیره ترتیب در HTML</button>
+    <button class="btn btn-outline" onclick="resetOrder()">↺ بازنشانی</button>
+  </div>
+
+  <!-- Selection bar -->
+  <div class="sel-bar" id="selBar">
+    <span class="sel-count" id="selCount">0 انتخاب‌شده</span>
+    <div class="sel-actions">
+      <button class="btn btn-outline" onclick="moveSelected('top')">⬆ اول</button>
+      <button class="btn btn-outline" onclick="moveSelected('up')">↑ بالا</button>
+      <button class="btn btn-outline" onclick="moveSelected('down')">↓ پایین</button>
+      <button class="btn btn-outline" onclick="moveSelected('bottom')">⬇ آخر</button>
+      <div class="move-to-box">
+        <span style="font-size:0.75rem;color:var(--muted)">برو به</span>
+        <input type="number" id="moveToPos" min="1" placeholder="#">
+        <button class="btn btn-warn" style="padding:4px 8px" onclick="moveSelected('to')">برو</button>
+      </div>
+      <button class="btn btn-danger-soft" onclick="deleteSelected()">✕ حذف</button>
+    </div>
+  </div>
+
+  <!-- Add panel -->
+  <div class="add-panel" id="addPanel">
+    <div class="tabs">
+      <div class="tab active" data-tab="single" onclick="switchTab('single')">تک‌تایی</div>
+      <div class="tab" data-tab="bulk" onclick="switchTab('bulk')">دسته‌ای (چند کد)</div>
+    </div>
+    <div id="tabSingle" style="display: block;">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>کد رشته‌محل *</label>
+          <input type="text" id="newCode" placeholder="22818" maxlength="12">
+        </div>
+        <div class="form-field">
+          <label>دانشگاه</label>
+          <input type="text" id="newUni" placeholder="شریف">
+        </div>
+        <div class="form-field">
+          <label>رشته</label>
+          <input type="text" id="newReshte" list="reshteList" placeholder="مهندسی برق، پزشکی، حقوق، …">
+          <datalist id="reshteList">
+            <option value="پزشکی"></option>
+            <option value="دندانپزشکی"></option>
+            <option value="داروسازی"></option>
+            <option value="دامپزشکی"></option>
+            <option value="پرستاری"></option>
+            <option value="مامایی"></option>
+            <option value="اتاق عمل"></option>
+            <option value="هوشبری"></option>
+            <option value="علوم آزمایشگاهی"></option>
+            <option value="رادیولوژی"></option>
+            <option value="فیزیوتراپی"></option>
+            <option value="کاردرمانی"></option>
+            <option value="گفتاردرمانی"></option>
+            <option value="شنوایی‌شناسی"></option>
+            <option value="بینایی‌سنجی"></option>
+            <option value="تغذیه"></option>
+            <option value="بهداشت عمومی"></option>
+            <option value="بهداشت محیط"></option>
+            <option value="بهداشت حرفه‌ای"></option>
+            <option value="فوریت‌های پزشکی"></option>
+            <option value="تکنولوژی پرتوشناسی"></option>
+            <option value="مدارک پزشکی"></option>
+            <option value="علوم تغذیه"></option>
+            <option value="زیست‌شناسی"></option>
+            <option value="سلولی مولکولی"></option>
+            <option value="میکروبیولوژی"></option>
+            <option value="ژنتیک"></option>
+            <option value="بیوتکنولوژی"></option>
+            <option value="روانشناسی"></option>
+            <option value="سایر"></option>
+          </datalist>
+        </div>
+        <div class="form-field" style="grid-column: 1 / -1;">
+          <label>توضیحات</label>
+          <textarea id="newDesc" placeholder="توضیحات اختیاری (مثلاً رتبه قبولی، ظرفیت، نکات مهم…)" rows="2"></textarea>
+        </div>
+        <div class="form-field">
+          <label>نوع پذیرش</label>
+          <select id="newNoe">
+            <option value="روزانه">روزانه</option>
+            <option value="نوبت دوم">نوبت دوم</option>
+            <option value="شبانه">شبانه</option>
+            <option value="پردیس">پردیس</option>
+            <option value="مجازی">مجازی</option>
+            <option value="پیام نور">پیام نور</option>
+            <option value="غیرانتفاعی">غیرانتفاعی</option>
+            <option value="1406">1406</option>
+            <option value="سایر">سایر</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="tabBulk" style="display: none;">
+      <div class="form-field">
+        <label>کدها (هر خط یک کد، یا با کاما جدا کنید)</label>
+        <textarea id="bulkCodes" placeholder="22818
+22794
+22813"></textarea>
+        <div class="bulk-hint">فقط کدها کافی است. موارد تکراری نادیده گرفته می‌شوند.</div>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="toggleAddPanel()">انصراف</button>
+      <button class="btn btn-add" onclick="addItems()">افزودن</button>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <input type="search" id="search" placeholder="جستجو کد، دانشگاه، رشته، توضیحات..." oninput="filterList()">
+  </div>
+
+  <div class="list-container">
+    <div class="list-header">
+      <span id="count">7 مورد</span>
+      <span>ⓘ توضیحات · ☑ انتخاب · ⠿ درگ · ✕ حذف</span>
+    </div>
+    <ul id="sortable"></ul>
+  </div>
+
+  <div class="export-area" id="exportArea"><textarea id="exportText" readonly=""></textarea></div>
+  <div class="toast" id="toast">حذف شد</div>
+  <div class="emptyset-overlay" id="emptysetOverlay" aria-hidden="true">
+    <div class="emptyset-logo" id="emptysetLogo" style="color: rgb(235, 67, 55); font-family: Verdana, Geneva, Tahoma, sans-serif; animation: 1.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards emptyset-bounce;">∅</div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script>
+
+
+
+
+
+
+
+
+
+
+
+
+const originalData = [{"code":"34080","reshte":"میکروبیولوژی","gerayesh":"بدون گرایش","noe":"روزانه","uni":"تهران","desc":""},{"code":"32119","reshte":"پزشکی","gerayesh":"بدون گرایش","noe":"روزانه","uni":"تهران","desc":"داراي خوابگاه ملکي"},{"code":"32123","reshte":"داروسازی","gerayesh":"بدون گرایش","noe":"روزانه","uni":"تهران","desc":"داراي خوابگاه ملکي"},{"code":"32161","reshte":"دندانپزشکی","gerayesh":"بدون گرایش","noe":"روزانه","uni":"بهشتی","desc":""},{"code":"32230","reshte":"پزشکی","gerayesh":"بدون گرایش","noe":"نوبت دوم","uni":"آزاد تهران","desc":""},{"code":"373۵8","reshte":"علوم آزمایشگاهی","gerayesh":"بدون گرایش","noe":"غیرانتفاعی","uni":"وارستگان مشهد","desc":"معرفي بهخوابگاههاي خودگردان"},{"code":"34050","reshte":"زیست فنآوری","gerayesh":"بدون گرایش","noe":"روزانه","uni":"اصفهان","desc":"فاقد خوابگاه"}];
+let currentData = [];
+let selected = new Set();
+let expandedDesc = new Set();
+let currentSize = 15;
+let addTab = 'single';
+
+function loadData() {
+  try {
+    const s = localStorage.getItem('ranker_share_mux5z5ki');
+    if (s) { currentData = JSON.parse(s); return; }
+  } catch(e) {}
+  currentData = JSON.parse(JSON.stringify(originalData));
+}
+function saveData() {
+  try { localStorage.setItem('ranker_share_mux5z5ki', JSON.stringify(currentData)); } catch(e) {}
+}
+
+(function() {
+  try {
+    const font = localStorage.getItem('ranker_share_mux5z5ki');
+    const size = localStorage.getItem('ranker_share_mux5z5ki');
+    if (font) {
+      document.documentElement.style.setProperty('--font-family', font);
+      const sel = document.getElementById('fontSelect');
+      for (const o of sel.options) if (o.value === font) o.selected = true;
+    }
+    if (size) {
+      currentSize = parseInt(size) || 15;
+      document.documentElement.style.setProperty('--font-size', currentSize + 'px');
+      document.getElementById('sizeLabel').textContent = currentSize;
+    }
+  } catch(e) {}
+})();
+
+function changeFont(v) {
+  document.documentElement.style.setProperty('--font-family', v);
+  try { localStorage.setItem('ranker_share_mux5z5ki', v); } catch(e) {}
+  showToast('فونت تغییر کرد');
+}
+function changeSize(d) {
+  currentSize = Math.min(22, Math.max(12, currentSize + d));
+  document.documentElement.style.setProperty('--font-size', currentSize + 'px');
+  document.getElementById('sizeLabel').textContent = currentSize;
+  try { localStorage.setItem('ranker_share_mux5z5ki', currentSize); } catch(e) {}
+}
+
+function toggleAddPanel() {
+  document.getElementById('addPanel').classList.toggle('open');
+}
+function switchTab(t) {
+  addTab = t;
+  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab === t));
+  document.getElementById('tabSingle').style.display = t === 'single' ? 'block' : 'none';
+  document.getElementById('tabBulk').style.display = t === 'bulk' ? 'block' : 'none';
+}
+
+function showEmptySetLogo() {
+  const overlay = document.getElementById('emptysetOverlay');
+  const logo = document.getElementById('emptysetLogo');
+  if (!overlay || !logo) return;
+
+  // Random vibrant color (HSL)
+  const h = Math.floor(Math.random() * 360);
+  const s = 70 + Math.floor(Math.random() * 25);
+  const l = 55 + Math.floor(Math.random() * 15);
+  logo.style.color = `hsl(${h}, ${s}%, ${l}%)`;
+
+  // Random font
+  const fonts = [
+    "'Segoe UI Symbol', 'Noto Sans Symbols', 'DejaVu Sans', serif",
+    "Georgia, 'Times New Roman', serif",
+    "'Courier New', Courier, monospace",
+    "Impact, Haettenschweiler, 'Arial Black', sans-serif",
+    "'Comic Sans MS', 'Comic Sans', cursive",
+    "Verdana, Geneva, Tahoma, sans-serif",
+    "'Trebuchet MS', 'Lucida Sans Unicode', sans-serif",
+    "'Palatino Linotype', Palatino, 'Book Antiqua', serif",
+    "system-ui, -apple-system, sans-serif",
+    "'Arial Black', Arial, sans-serif"
+  ];
+  logo.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+
+  // Random animation
+  const anims = [
+    { name: 'emptyset-pop',    duration: 1.8, easing: 'cubic-bezier(0.22, 1.2, 0.36, 1)' },
+    { name: 'emptyset-spin',   duration: 1.9, easing: 'cubic-bezier(0.34, 1.4, 0.64, 1)' },
+    { name: 'emptyset-bounce', duration: 1.7, easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' },
+    { name: 'emptyset-flip',   duration: 1.85, easing: 'cubic-bezier(0.25, 1.1, 0.5, 1)' },
+    { name: 'emptyset-zoom',   duration: 1.6, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+    { name: 'emptyset-wobble', duration: 1.95, easing: 'cubic-bezier(0.22, 1.3, 0.36, 1)' }
+  ];
+  const anim = anims[Math.floor(Math.random() * anims.length)];
+
+  // Slight random placement offset (within ~±12% of viewport)
+  const offsetX = (Math.random() - 0.5) * 24;
+  const offsetY = (Math.random() - 0.5) * 24;
+  logo.style.left = offsetX + '%';
+  logo.style.top = offsetY + '%';
+
+  // Restart animation with chosen variant
+  logo.style.animation = 'none';
+  void logo.offsetWidth;
+  logo.style.animation = anim.name + ' ' + anim.duration + 's ' + anim.easing + ' forwards';
+
+  overlay.classList.add('show');
+  setTimeout(function() {
+    overlay.classList.remove('show');
+    logo.style.left = '';
+    logo.style.top = '';
+  }, anim.duration * 1000 + 100);
+}
+
+function addItems() {
+  if (addTab === 'bulk') {
+    const raw = document.getElementById('bulkCodes').value;
+    const codes = raw.split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+    let added = 0;
+    for (const code of codes) {
+      if (currentData.some(x => x.code === code)) continue;
+      currentData.unshift({
+        code, reshte: 'سایر', gerayesh: 'بدون گرایش', noe: 'روزانه', uni: '', desc: code
+      });
+      added++;
+    }
+    if (!added) { showToast('کد جدیدی اضافه نشد', true); return; }
+    document.getElementById('bulkCodes').value = '';
+    showToast(added + ' مورد اضافه شد');
+    showEmptySetLogo();
+  } else {
+    const code = document.getElementById('newCode').value.trim();
+    if (!code) { showToast('کد الزامی است', true); return; }
+    if (currentData.some(x => x.code === code)) { showToast('کد تکراری است', true); return; }
+    currentData.unshift({
+      code,
+      reshte: document.getElementById('newReshte').value.trim() || 'سایر',
+      gerayesh: 'بدون گرایش',
+      noe: document.getElementById('newNoe').value,
+      uni: document.getElementById('newUni').value.trim(),
+      desc: document.getElementById('newDesc').value.trim()
+    });
+    document.getElementById('newCode').value = '';
+    document.getElementById('newUni').value = '';
+    document.getElementById('newReshte').value = '';
+    document.getElementById('newDesc').value = '';
+    showToast('اضافه شد ✓');
+    showEmptySetLogo();
+  }
+  saveData();
+  selected.clear();
+  document.getElementById('search').value = '';
+  render(currentData);
+  updateSelBar();
+  toggleAddPanel();
+}
+
+
+function hashStr(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+function reshteBadgeClass(r) {
+  const key = String(r || '').trim();
+  if (!key) return 'badge-other';
+  return 'badge-r' + (hashStr(key) % 8);
+}
+function badgeClass(g, n) {
+  let gc = 'badge-other';
+  if (g.includes('هوش') || g.includes('محاسبات نرم')) gc = 'badge-ai';
+  else if (g.includes('نرم')) gc = 'badge-soft';
+  else if (g.includes('داده') || g.includes('کاوی')) gc = 'badge-data';
+  else if (g.includes('امن') || g.includes('جرم')) gc = 'badge-secure';
+  else if (g.includes('شبکه')) gc = 'badge-net';
+  let nc = 'badge-other';
+  if (n === 'روزانه') nc = 'badge-daily';
+  else if (n === 'نوبت دوم') nc = 'badge-night';
+  else if (n === 'شبانه') nc = 'badge-eve';
+  else if (n === 'پردیس') nc = 'badge-campus';
+  else if (n === 'مجازی' || n === 'پیام نور') nc = 'badge-virt';
+  else if (n === '1406') nc = 'badge-year';
+  else if (n === 'غیرانتفاعی' || n === 'سایر') nc = 'badge-other';
+  return {gc, nc};
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function render(list) {
+  const ul = document.getElementById('sortable');
+  ul.innerHTML = '';
+  list.forEach((item, idx) => {
+    const {gc, nc} = badgeClass(item.gerayesh, item.noe);
+    const rc = reshteBadgeClass(item.reshte);
+    const li = document.createElement('li');
+    li.className = 'item' + (selected.has(item.code) ? ' selected' : '');
+    li.dataset.code = item.code;
+    const hasDesc = !!(item.desc && item.desc.trim());
+    const isOpen = hasDesc && expandedDesc.has(item.code);
+    const infoBtn = hasDesc
+      ? `<button type="button" class="info-toggle${isOpen ? ' active' : ''}" title="نمایش توضیحات" onclick="event.stopPropagation(); toggleDesc('${item.code}')">∅</button>`
+      : '';
+    const descPanel = hasDesc
+      ? `<div class="desc-panel${isOpen ? ' show' : ''}">${escHtml(item.desc)}</div>`
+      : '';
+    li.innerHTML = `
+      <div class="item-main">
+        <div class="check" onclick="event.stopPropagation(); toggleSelect('${item.code}')"></div>
+        <span class="handle">⠿</span>
+        <span class="rank">${idx + 1}</span>
+        <div class="content" onclick="toggleSelect('${item.code}')">
+          <div class="code">${item.code}</div>
+          <div class="meta">
+            <span class="badge ${rc}">${escHtml(item.reshte)}</span>
+            <span class="badge ${gc}">${escHtml(item.gerayesh)}</span>
+            <span class="badge ${nc}">${escHtml(item.noe)}</span>
+            ${escHtml(item.uni || '')}
+          </div>
+        </div>
+        ${infoBtn}
+        <div class="item-actions">
+          <button type="button" title="حذف" onclick="event.stopPropagation(); deleteOne('${item.code}')">✕</button>
+        </div>
+      </div>
+      ${descPanel}
+    `;
+    ul.appendChild(li);
+  });
+  document.getElementById('count').textContent = list.length + ' مورد';
+}
+
+function toggleDesc(code) {
+  if (expandedDesc.has(code)) expandedDesc.delete(code);
+  else expandedDesc.add(code);
+  const li = document.querySelector(`#sortable .item[data-code="${CSS.escape(code)}"]`);
+  if (li) {
+    const panel = li.querySelector('.desc-panel');
+    const btn = li.querySelector('.info-toggle');
+    if (panel) panel.classList.toggle('show', expandedDesc.has(code));
+    if (btn) btn.classList.toggle('active', expandedDesc.has(code));
+  }
+}
+
+function toggleSelect(code) {
+  if (selected.has(code)) selected.delete(code);
+  else selected.add(code);
+  document.querySelectorAll('#sortable .item').forEach(el => {
+    el.classList.toggle('selected', selected.has(el.dataset.code));
+  });
+  updateSelBar();
+}
+function selectAll() {
+  const visible = [...document.querySelectorAll('#sortable .item')].map(el => el.dataset.code);
+  visible.forEach(c => selected.add(c));
+  document.querySelectorAll('#sortable .item').forEach(el => el.classList.add('selected'));
+  updateSelBar();
+}
+function deselectAll() {
+  selected.clear();
+  document.querySelectorAll('#sortable .item').forEach(el => el.classList.remove('selected'));
+  updateSelBar();
+}
+function updateSelBar() {
+  const bar = document.getElementById('selBar');
+  const n = selected.size;
+  bar.classList.toggle('show', n > 0);
+  document.getElementById('selCount').textContent = n + ' انتخاب‌شده';
+}
+
+function moveSelected(dir) {
+  if (!selected.size) return;
+  const codes = currentData.map(x => x.code);
+  const selArr = codes.filter(c => selected.has(c));
+  if (!selArr.length) return;
+
+  // remove selected from list
+  let rest = currentData.filter(x => !selected.has(x.code));
+  const selItems = currentData.filter(x => selected.has(x.code));
+
+  if (dir === 'top') {
+    currentData = [...selItems, ...rest];
+  } else if (dir === 'bottom') {
+    currentData = [...rest, ...selItems];
+  } else if (dir === 'up') {
+    // move block one step up
+    const firstIdx = codes.indexOf(selArr[0]);
+    if (firstIdx <= 0) return;
+    // find contiguous? for simplicity treat as ordered block in current order
+    const insertAt = firstIdx - 1;
+    currentData = [...rest.slice(0, insertAt), ...selItems, ...rest.slice(insertAt)];
+  } else if (dir === 'down') {
+    const lastIdx = codes.indexOf(selArr[selArr.length - 1]);
+    if (lastIdx >= codes.length - 1) return;
+    const insertAt = lastIdx - selArr.length + 2; // after removal
+    // rebuild: remove then insert after the item that was just after the block
+    const afterCode = codes[lastIdx + 1];
+    const afterIdxInRest = rest.findIndex(x => x.code === afterCode);
+    const insertAt2 = afterIdxInRest + 1;
+    currentData = [...rest.slice(0, insertAt2), ...selItems, ...rest.slice(insertAt2)];
+  } else if (dir === 'to') {
+    let pos = parseInt(document.getElementById('moveToPos').value, 10);
+    if (!pos || pos < 1) { showToast('شماره معتبر وارد کنید', true); return; }
+    pos = Math.min(pos, rest.length + 1);
+    currentData = [...rest.slice(0, pos - 1), ...selItems, ...rest.slice(pos - 1)];
+  }
+
+  saveData();
+  document.getElementById('search').value = '';
+  render(currentData);
+  // re-apply selection visual
+  document.querySelectorAll('#sortable .item').forEach(el => {
+    el.classList.toggle('selected', selected.has(el.dataset.code));
+  });
+  showToast('جابجا شد');
+}
+
+function deleteOne(code) {
+  currentData = currentData.filter(x => x.code !== code);
+  selected.delete(code);
+  saveData();
+  render(filterCurrent());
+  updateSelBar();
+  showToast('حذف شد');
+}
+function deleteSelected() {
+  if (!selected.size) return;
+  if (!confirm(selected.size + ' مورد حذف شود؟')) return;
+  currentData = currentData.filter(x => !selected.has(x.code));
+  selected.clear();
+  saveData();
+  render(currentData);
+  updateSelBar();
+  showToast('حذف شدند');
+}
+
+function filterCurrent() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  if (!q) return currentData;
+  return currentData.filter(item =>
+    item.code.includes(q) ||
+    (item.uni && item.uni.toLowerCase().includes(q)) ||
+    item.gerayesh.includes(q) ||
+    item.reshte.includes(q) ||
+    item.noe.includes(q) ||
+    (item.desc && item.desc.toLowerCase().includes(q))
+  );
+}
+function filterList() {
+  render(filterCurrent());
+  document.querySelectorAll('#sortable .item').forEach(el => {
+    el.classList.toggle('selected', selected.has(el.dataset.code));
+  });
+}
+
+function getOrderedCodes() {
+  return [...document.querySelectorAll('#sortable .item')].map(el => el.dataset.code);
+}
+function getOrderedFull() {
+  return getOrderedCodes().map((c, i) => {
+    const item = currentData.find(x => x.code === c) || originalData.find(x => x.code === c) || {reshte:'',gerayesh:'',noe:'',uni:'',desc:''};
+    const base = `${i+1}. ${c} | ${item.reshte} | ${item.gerayesh} | ${item.noe} | ${item.uni || ''}`;
+    return item.desc ? `${base} | ${item.desc}` : base;
+  }).join('\\n');
+}
+function showToast(msg, err) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!err);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1700);
+}
+
+
+
+function exportHTML() {
+  const codes = getOrderedCodes();
+  const ordered = codes.map(c => {
+    const item = currentData.find(x => x.code === c) || originalData.find(x => x.code === c);
+    return item ? {
+      code: item.code,
+      reshte: item.reshte || '',
+      gerayesh: item.gerayesh || '',
+      noe: item.noe || '',
+      uni: item.uni || '',
+      desc: item.desc || ''
+    } : { code: c, reshte: '', gerayesh: '', noe: '', uni: '', desc: '' };
+  });
+
+  // Fetch current page as text is not available on file:// — use DOM script source
+  const scriptEl = [...document.scripts].find(s => s.textContent && s.textContent.includes('const originalData'));
+  if (!scriptEl) {
+    showToast('خطا در ساخت فایل', true);
+    return;
+  }
+
+  let scriptText = scriptEl.textContent;
+  // Replace originalData array
+  scriptText = scriptText.replace(
+    /const originalData = \[.*?\];/s,
+    'const originalData = ' + JSON.stringify(ordered) + ';'
+  );
+  // New storage key so recipient does not load someone else's localStorage order
+  const newKey = 'ranker_share_' + Date.now().toString(36);
+  scriptText = scriptText.replace(/ranker_share_mux5z5ki/g, newKey);
+  scriptText = scriptText.replace(/ranker_share_mux5z5ki/g, newKey);
+  scriptText = scriptText.replace(/ranker_share_[a-z0-9]+/g, newKey);
+
+  // Rebuild full HTML from head/body, swapping the main app script
+  const head = document.head.innerHTML;
+  // body without the big script - clone structure
+  const bodyClone = document.body.cloneNode(true);
+  // Clear list content (will re-render on load); remove open panels
+  const ul = bodyClone.querySelector('#sortable');
+  if (ul) ul.innerHTML = '';
+  const count = bodyClone.querySelector('#count');
+  if (count) count.textContent = ordered.length + ' مورد';
+  bodyClone.querySelectorAll('.item.selected').forEach(el => el.classList.remove('selected'));
+  const selBar = bodyClone.querySelector('#selBar');
+  if (selBar) selBar.classList.remove('show');
+  const addPanel = bodyClone.querySelector('#addPanel');
+  if (addPanel) addPanel.classList.remove('open');
+  // Remove existing inline scripts from body clone (we inject one clean script)
+  bodyClone.querySelectorAll('script').forEach(s => s.remove());
+
+  const full = `<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مرتب‌سازی انتخاب رشته — کامپیوتر</title>
+` + head.replace(/<title>[^<]*<\/title>/, '') + `
+</head>
+<body>
+` + bodyClone.innerHTML + `
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"><\/script>
+<script>
+` + scriptText + `
+<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([full], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'R∅shte_T_Vr.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('HTML با ترتیب فعلی دانلود شد — همین را بفرست ✓');
+}
+
+function exportCSV() {
+  const codes = getOrderedCodes();
+  const rows = [['اولویت', 'کد', 'رشته', 'گرایش', 'نوع پذیرش', 'دانشگاه', 'توضیحات']];
+  codes.forEach((c, i) => {
+    const item = currentData.find(x => x.code === c) || originalData.find(x => x.code === c) || {};
+    rows.push([
+      String(i + 1),
+      item.code || c,
+      item.reshte || '',
+      item.gerayesh || '',
+      item.noe || '',
+      item.uni || '',
+      item.desc || ''
+    ]);
+  });
+  // BOM for Excel Persian support
+  const bom = '\uFEFF';
+  const csv = bom + rows.map(r => r.map(cell => {
+    const s = String(cell).replace(/"/g, '""');
+    return /[",\n]/.test(s) ? '"' + s + '"' : s;
+  }).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'entekhab_reshte.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('فایل CSV دانلود شد ✓');
+}
+
+function exportCodes() {
+  const text = getOrderedCodes().join('\\n');
+  navigator.clipboard.writeText(text).then(() => showToast('کدها کپی شدند ✓')).catch(() => {
+    document.getElementById('exportArea').style.display = 'block';
+    document.getElementById('exportText').value = text;
+  });
+}
+function exportFull() {
+  const text = getOrderedFull();
+  navigator.clipboard.writeText(text).then(() => showToast('لیست کامل کپی شد ✓')).catch(() => {
+    document.getElementById('exportArea').style.display = 'block';
+    document.getElementById('exportText').value = text;
+  });
+}
+function resetOrder() {
+  if (!confirm('همه تغییرات پاک شود؟')) return;
+  currentData = JSON.parse(JSON.stringify(originalData));
+  selected.clear();
+  saveData();
+  document.getElementById('search').value = '';
+  render(currentData);
+  updateSelBar();
+  showToast('بازنشانی شد');
+}
+
+
+function updateRanks() {
+  document.querySelectorAll('#sortable .item').forEach((el, i) => {
+    const rankEl = el.querySelector('.rank');
+    if (rankEl) rankEl.textContent = i + 1;
+  });
+}
+
+loadData();
+render(currentData);
+
+new Sortable(document.getElementById('sortable'), {
+  animation: 160,
+  handle: '.handle',
+  ghostClass: 'sortable-ghost',
+  chosenClass: 'sortable-chosen',
+  onEnd() {
+    updateRanks();
+    if (document.getElementById('search').value.trim()) return;
+    const codes = getOrderedCodes();
+    currentData = codes.map(c => currentData.find(x => x.code === c)).filter(Boolean);
+    saveData();
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
